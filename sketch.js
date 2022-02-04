@@ -17,10 +17,22 @@ var ligacaoFC;
 
 var casa, melancia, coelhinho;
 
+var coelho; 
+
+var botaoRasgar;
+
+var pisca, matandoFome;
+
 function preload(){
   casa = loadImage("background.png");
   melancia = loadImage("melon.png");
   coelhinho = loadImage("Rabbit-01.png");
+  pisca = loadAnimation("blink_1.png", "blink_2.png", "blink_3.png");
+  matandoFome = loadAnimation("eat_0.png","eat_1.png","eat_2.png","eat_3.png","eat_4.png");
+
+  pisca.playing = true;
+  matandoFome.looping = false;
+  matandoFome.playing = true;
 }
 
 function setup() 
@@ -28,6 +40,9 @@ function setup()
   createCanvas(500,700);
   engine = Engine.create();
   world = engine.world;
+
+  pisca.frameDelay = 20;
+  matandoFome.frameDelay = 20;
  
   rectMode(CENTER);
   ellipseMode(RADIUS);
@@ -40,6 +55,18 @@ function setup()
   }
   fruta = Bodies.circle(300,300,15,opcao);
   cordaFruta = new Rope(6,{x:245,y:30});
+
+  coelho = createSprite(250,630,100,100);
+  coelho.addImage(coelhinho);
+  coelho.scale = 0.2;
+  coelho.addAnimation("piscando", pisca);
+  coelho.addAnimation("comendo", matandoFome);
+  coelho.changeAnimation("piscando");
+
+  botaoRasgar = createImg("cut_button.png");
+  botaoRasgar.position(220,30);
+  botaoRasgar.size(50,50);
+  botaoRasgar.mouseClicked(cair);
 
 
 
@@ -58,7 +85,12 @@ function draw()
   cordaFruta.show();
   image(melancia, fruta.position.x, fruta.position.y, 60, 60);
 
-
+drawSprites();
+}
+function cair(){
+  ligacaoFC.rasgarCorda();
+  ligacaoFC = null;
+ cordaFruta.break();
 }
 
 
